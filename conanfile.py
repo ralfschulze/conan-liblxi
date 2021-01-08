@@ -21,8 +21,10 @@ class LiblxiConan(ConanFile):
 
     def system_requirements(self):
         packages = []
-        if os_info.linux_distro == "ubuntu":
+        if tools.os_info.linux_distro == "ubuntu":
+            packages.append("autogen")
             packages.append("autoconf")
+            packages.append("automake")
             packages.append("libtool")
 
             if self.options.avahi:
@@ -32,7 +34,7 @@ class LiblxiConan(ConanFile):
             packages.append("libtirpc-dev")
 
         if packages:
-            installer = SystemPackageTool()
+            installer = tools.SystemPackageTool()
             installer.install(packages)
 
     def source(self):
