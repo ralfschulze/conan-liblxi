@@ -33,9 +33,9 @@ class LiblxiConan(ConanFile):
             packages.append("libxml2-dev")
             packages.append("libtirpc-dev")
 
-        if packages:
+        for pkg in packages:
             installer = tools.SystemPackageTool()
-            installer.install(packages)
+            installer.install(pkg)
 
     def source(self):
         targz_name = "liblxi-v{version}.tar.gz".format(version=self.version)
