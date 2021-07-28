@@ -1,19 +1,25 @@
 import os
 
-from conans import ConanFile, CMake, tools, RunEnvironment
+from conans import ConanFile, CMake, tools
 
 
-class TestPackageConan(ConanFile):
+class LibLxiTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
-    options = {"shared": [True, False], "fPIC": [True, False], "withzlib": [True, False]}
-    default_options = "shared=False", "fPIC=True", "withzlib=True"
 
     def build(self):
         cmake = CMake(self)
+        # Current dir is "test_package/build/<build_id>" and CMakeLists.txt is
+        # in "test_package"
         cmake.configure()
         cmake.build()
 
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
+        self.copy('*.so*', dst='bin', src='lib')
+
     def test(self):
-        with tools.environment_append(RunEnvironment(self).vars):
-            self.run(os.path.join("bin", "libtar-test-package"))
+        if not tools.cross_building(self):
+            os.chdir("bin")
+            self.run(".%sexample" % os.sep)
