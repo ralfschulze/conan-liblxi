@@ -50,8 +50,12 @@ class LiblxiConan(ConanFile):
         name = "liblxi-{version}".format(version=self.version)
         with tools.chdir(name):
             args = []
-            if not self.options.shared:
+            if self.options.shared:
+                args.append("--enable-shared")
+                args.append("--disable-static")
+            else:
                 args.append("--disable-shared")
+                args.append("--enable-static")
 
             if not self.options.avahi:
                 args.append("--disable-avahi")
