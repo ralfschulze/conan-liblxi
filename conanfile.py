@@ -18,32 +18,24 @@ class LiblxiConan(ConanFile):
         True, False], "avahi": [True, False]}
     default_options = "shared=True", "fPIC=True", "avahi=False"
     checksum = "5c2a97b1d098ac49f6c01c918298db8b3f7af505e463b4d3d8952aff447e9ac2"
-
+    generators = "pkg_config" # needed for e.g. libxml deps
     _autotools = None
 
     @property
     def _source_subfolder(self):
         return "{name}-v{version}".format(name=self.name, version=self.version)
 
-    def system_requirements(self):
-        packages = []
-        if tools.os_info.linux_distro == "ubuntu":
-            packages.append("autogen")
-            packages.append("autoconf")
-            packages.append("automake")
-            packages.append("libtool")
-
-            if self.options.avahi:
-                packages.append("libavahi-client-dev")
-
-            packages.append("libxml2-dev")
-
-        for pkg in packages:
-            installer = tools.SystemPackageTool()
-            installer.install(pkg)
+    def build_requirements(self):
+        self.build_requires("autoconf/2.71")
+        self.build_requires("pkgconf/1.7.4")
+        self.build_requires("automake/1.16.3")
+        self.build_requires("libtool/2.4.6")
 
     def requirements(self):
         self.requires("libtirpc/1.3.2")
+        self.requires("libxml2/2.9.12")
+        if self.options.avahi: 
+            self.requires("avahi/0.8")
 
     def source(self):
         targz_name = "{name}-v{version}.tar.gz".format(name=self.name,
