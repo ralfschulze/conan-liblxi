@@ -37,11 +37,13 @@ class LiblxiConan(ConanFile):
                 packages.append("libavahi-client-dev")
 
             packages.append("libxml2-dev")
-            packages.append("libtirpc-dev")
 
         for pkg in packages:
             installer = tools.SystemPackageTool()
             installer.install(pkg)
+
+    def requirements(self):
+        self.requires("libtirpc/1.3.2")
 
     def source(self):
         targz_name = "{name}-v{version}.tar.gz".format(name=self.name,
