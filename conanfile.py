@@ -25,6 +25,9 @@ class LiblxiConan(ConanFile):
     def _source_subfolder(self):
         return "{name}-v{version}".format(name=self.name, version=self.version)
 
+    def configure(self):
+        self.options["pkgconf"].shared = False
+
     def build_requirements(self):
         self.build_requires("autoconf/2.71")
         self.build_requires("pkgconf/1.7.4")
